@@ -8,9 +8,12 @@ dotenv.config()
 
 /* Get Access-Token
 https://developer.spotify.com/console/post-playlists/
+
+Login
+https://developer.spotify.com/dashboard/login
 */
 
-const playlistsId = '2rHmqQUNd48I2MYhvDoic4'
+const playlistsId = '21YfnJXZGWAfsQ5wad6Ddf'
 
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.CLIENT_ID,
@@ -55,7 +58,7 @@ function downloadSong(songURL, song_name) {
 async function download(id) {
   let array = await getSpotifySongsList(id)
   const arrayLength = array.length
-
+  let global_song_name = ""
   let driver = await new Builder().forBrowser('firefox').build()
 
   for (let i = 0; i < arrayLength; ++i) {
@@ -73,6 +76,7 @@ async function download(id) {
         .findElement(By.id('video-title'))
         .getAttribute('title')
       song_name = song_name.replace(/[&\/\\#^+()$~%.'":*?<>{}|!@]/g, '')
+      global_song_name = song_name
       let splited_url = url.split('.com')
       const downloadPageUrl = splited_url[0] + 'pp.com' + splited_url[1]
       await driver.get(downloadPageUrl)
@@ -85,7 +89,7 @@ async function download(id) {
         .getAttribute('href')
       downloadSong(downloadUrl, song_name)
     } catch (err) {
-      console.log(err)
+      console.log(err, global_song_name)
     }
   }
 }
